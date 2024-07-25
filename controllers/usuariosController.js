@@ -48,6 +48,57 @@ const register = async(req, res) => {
 
 const login = async(req, res) => {
     try{
+        const { email, password } = req.body;
+
+        if(!email || !password){
+            return res
+            .status(400)
+            .json({error: 'Hace falta el correo o contraseña'})
+        }
+        
+        let usuario = await UsuariosModel.findOneByEmail(email);
+
+        if(!usuario){
+            return res
+            .status(404)
+            .json({error: 'Usuario no encontrado'})
+        }
+
+        let infoCoincide = await bcryptjs.compare(password, usuario.password);
+
+        if(!infoCoincide){
+            return res
+            .status(404)
+            .json({error: 'Contraseña no coincide'})
+        }
+
+        const token = jwt.sign({
+            email: email
+        },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "1h"
+            }
+        )
+
+        return res.status(200).json({ ok: true, msg: token})
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error server'
+        })
+    }
+
+}
+
+let perfil = async (req, res) => {
+    try{
+
+        let usuario = await UsuariosModel.findOneByEmail(req.email);
+
+        return res.json({ ok: true, msg: usuario})
 
     }catch(error){
         console.log(error);
@@ -60,5 +111,6 @@ const login = async(req, res) => {
 
 export const UsuarioController = {
     register,
-    login
+    login,
+    perfil
 }
