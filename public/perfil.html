@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Perfil</h1>
+    <h2>Usuario: <span id="usuario"></span></h2>
+    <h2>Email: <span id="email"></span></h2>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const token = localStorage.getItem('token');
+        const usuario = document.querySelector('#usuario')
+        const email = document.querySelector('#email')
+
+        if(!token){
+            window.location.href = "/login"
+        }
+
+        axios.get('/api/usuarios/perfil', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(({data}) => {
+            usuario.textContent = data.msg.nombre_usuario;
+            email.textContent = data.msg.email;
+        })
+        .catch(e => console.log(e.error))
+    </script>
+</body>
+</html>
