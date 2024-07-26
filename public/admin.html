@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador de usuarios</title>
+</head>
+<body>
+    <h1>Panel Administrador</h1>
+
+    <button id="logout">Cerrar sesion</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        const logout = document.querySelector('#logout');
+        const token = localStorage.getItem('token');
+
+        if(!token){
+            window.location.href = "/login";
+        }
+        
+        logout.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = "/login";
+        })
+    </script>
+</body>
+</html>

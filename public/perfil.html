@@ -7,6 +7,9 @@
 </head>
 <body>
     <h1>Perfil</h1>
+
+    <button id="logout">Cerrar sesion</button>
+
     <h2>Usuario: <span id="usuario"></span></h2>
     <h2>Email: <span id="email"></span></h2>
 
@@ -16,9 +19,16 @@
         const usuario = document.querySelector('#usuario')
         const email = document.querySelector('#email')
 
+        const logout = document.querySelector('#logout');
+
         if(!token){
             window.location.href = "/login"
         }
+
+        logout.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = "/login";
+        })
 
         axios.get('/api/usuarios/perfil', {
             headers: {
