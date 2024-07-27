@@ -32,8 +32,7 @@ const getUsuarios = async () => {
     const query = {
         text: `
             SELECT *
-            FROM usuarios
-        `
+            FROM usuarios`
     }
 
     const {rows} = await db.query(query);

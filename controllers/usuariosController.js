@@ -36,7 +36,9 @@ const register = async (req, res) => {
 
         return res.status(201).json({
             ok: true,
-            msg: token
+            msg: {
+                token, id_rol: nuevoUsuario.id_rol
+            }
         })
     } catch (error) {
         console.log(error);
@@ -83,7 +85,9 @@ const login = async (req, res) => {
             }
         )
 
-        return res.status(200).json({ ok: true, msg: token })
+        return res.status(200).json({ ok: true, msg: {
+            token, id_rol: usuario.id_rol
+        } })
 
     } catch (error) {
         console.log(error);
@@ -113,7 +117,7 @@ let perfil = async (req, res) => {
 
 let obtenerUsuarios = async (req, res) => {
     try {
-        let usuarios = UsuariosModel.getUsuarios();
+        const usuarios = await UsuariosModel.getUsuarios();
 
         return res.json({ ok: true, msg: usuarios })
     } catch (error) {

@@ -29,9 +29,14 @@
                         email, password
                     })
 
-                    localStorage.setItem('token', data.msg);
+                    localStorage.setItem('token', data.msg.token);
 
-                    window.location.href = '/perfil'
+                    if(data.msg.id_rol == 1){
+                        window.location.href = '/admin'
+                    } else if(data.msg.id_rol == 3) {
+                        window.location.href = '/perfil'
+                    }
+
                 }catch(error){
                     console.log(error);
                 }

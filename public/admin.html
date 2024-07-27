@@ -10,10 +10,18 @@
 
     <button id="logout">Cerrar sesion</button>
 
+    <h2>Veterinarios</h2>
+    <ul id="veterinarios"></ul>
+
+    <h2>Clientes</h2>
+    <ul id="clientes"></ul>
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
         const logout = document.querySelector('#logout');
+        const clientes = document.querySelector('#clientes');
+        const veterinarios = document.querySelector('#veterinarios');
         const token = localStorage.getItem('token');
 
         if(!token){
@@ -24,6 +32,56 @@
             localStorage.removeItem('token');
             window.location.href = "/login";
         })
+
+        const obtenerUsuarios = async () => {
+            const {data} = await axios.get('/api/usuarios/', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            const usuarios = data.msg;
+
+            console.log('usuarios ->', usuarios);
+
+            clientes.textContent = ""
+            veterinarios.textContent = ""
+
+            usuarios.forEach(usuario => {
+                if(usuario.id_rol == 1) return;
+                const li = document.createElement('li');
+                li.textContent = usuario.nombre_usuario;
+
+                if(usuario.id_rol == 3){
+                    const button = document.createElement('button');
+                    button.textContent = "Promover a veterinario";
+                    button.addEventListener('click', async() => {
+                        if(!confirm('¿Está seguro que desea volver Veterinario a este usuario?')){
+                            return
+                        }
+                        try{
+                            const {data} = await axios.put(`/api/usuarios/updateRolVet/${usuario.id_usuario}`, {}, {
+                                headers: {
+                                    Authorization: `Bearer ${token}`
+                                }
+                            })
+                            console.log(data);
+                            obtenerUsuarios();
+                            // window.location.reload();
+                        }catch(error){
+                            console.log(error);
+                        }
+                    })
+                    li.appendChild(button);
+                    clientes.appendChild(li);
+                }
+                if(usuario.id_rol == 2){
+                    veterinarios.appendChild(li)
+                }
+            })
+        }
+        obtenerUsuarios()
+
     </script>
 </body>
 </html>
